@@ -18,6 +18,36 @@
                     size: self.size
             size_hint_x: 1
         Button:
+from kivy.app import App
+from kivy.uix.button import Button
+from kivy.animation import Animation
+from kivy.properties import ListProperty
+
+class AnimatedButton(Button):
+    default_color = ListProperty([1, 1, 1, 1])  # Color por defecto del botón
+
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            anim = Animation(background_color=(0.2, 0.6, 1, 1), duration=0.2)
+            anim.start(self)
+            return True
+        return super().on_touch_down(touch)
+
+    def on_touch_up(self, touch):
+        if self.collide_point(*touch.pos):
+            anim = Animation(background_color=self.default_color, duration=0.2)
+            anim.start(self)
+            self.trigger_action()
+            return True
+        return super().on_touch_up(touch)
+
+class TestApp(App):
+    def build(self):
+        return AnimatedButton(text='Press Me', size_hint=(None, None), size=(200, 100),
+                              pos_hint={'center_x': 0.5, 'center_y': 0.5})
+
+if _name_ == '_main_':
+    TestApp().run()
             size_hint: 1, None
             height: 100
             text: "Lunes"
